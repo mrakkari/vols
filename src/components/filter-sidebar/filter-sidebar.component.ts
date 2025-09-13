@@ -2,6 +2,12 @@ import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+interface ShowSections {
+  escales: boolean;
+  heuresDepart: boolean;
+  dureeVoyage: boolean;
+}
+
 interface FilterOptions {
   escales: string[];
   heuresDepart: { min: number; max: number };
@@ -200,7 +206,7 @@ interface FilterOptions {
 export class FilterSidebarComponent {
   @Output() filtersChanged = new EventEmitter<FilterOptions>();
 
-  showSections = signal({
+  showSections = signal<ShowSections>({
     escales: true,
     heuresDepart: true,
     dureeVoyage: true
@@ -222,7 +228,7 @@ export class FilterSidebarComponent {
     max: 2640  // 44.0 hours
   });
 
-  toggleSection(section: keyof typeof this.showSections) {
+  toggleSection(section: keyof ShowSections) {
     const current = this.showSections();
     current[section] = !current[section];
     this.showSections.set({ ...current });
