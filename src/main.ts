@@ -96,7 +96,7 @@ import { FlightService, Flight, SearchFilters } from './services/flight.service'
                 <!-- Calendar Popup -->
                 <div *ngIf="showCalendar()" class="absolute top-full left-0 mt-2 z-50">
                   <app-calendar
-                    [initialDate]="selectedDate() ? new Date(selectedDate()!) : undefined"
+                    [initialDate]="initialDateForCalendar"
                     (dateSelected)="onCalendarDateSelected($event)"
                     (cancelled)="hideCalendar()">
                   </app-calendar>
@@ -245,6 +245,12 @@ export class App implements OnInit {
     ville_arrivee: 'DJE',
     tri: 'meilleur'
   });
+
+  // Computed signal for initial date
+  get initialDateForCalendar(): Date | undefined {
+    const dateStr = this.selectedDate();
+    return dateStr ? new Date(dateStr) : undefined;
+  }
 
   constructor(private flightService: FlightService) {}
 
