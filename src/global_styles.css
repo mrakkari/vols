@@ -15,6 +15,77 @@
 }
 
 @layer components {
+  .hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)), url('https://images.pexels.com/photos/457882/pexels-photo-457882.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+  }
+
+  .hero-title {
+    @apply text-5xl md:text-6xl font-bold text-white mb-12 text-center leading-tight;
+  }
+
+  .search-form-container {
+    @apply bg-white rounded-2xl shadow-2xl p-8 max-w-6xl mx-auto;
+  }
+
+  .search-grid {
+    @apply grid grid-cols-1 md:grid-cols-5 gap-4 mb-6;
+  }
+
+  .search-field {
+    @apply relative;
+  }
+
+  .search-field label {
+    @apply block text-sm font-semibold text-gray-700 mb-2;
+  }
+
+  .search-field input, .search-field button {
+    @apply w-full px-4 py-4 border border-gray-300 rounded-lg text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all;
+  }
+
+  .swap-button-container {
+    @apply flex items-end justify-center pb-4;
+  }
+
+  .swap-button {
+    @apply p-3 bg-white border-2 border-gray-300 rounded-full hover:border-blue-500 hover:bg-blue-50 transition-all duration-200;
+  }
+
+  .search-options {
+    @apply flex flex-wrap gap-4 mb-6;
+  }
+
+  .checkbox-option {
+    @apply flex items-center space-x-2;
+  }
+
+  .checkbox-option input[type="checkbox"] {
+    @apply rounded border-gray-300 text-blue-600 focus:ring-blue-500;
+  }
+
+  .checkbox-option label {
+    @apply text-sm text-gray-700 font-medium;
+  }
+
+  .trip-type-selector {
+    @apply inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500;
+  }
+
+  .search-button {
+    @apply w-full md:w-auto px-12 py-4 bg-blue-600 text-white font-bold text-lg rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+
+  .results-header {
+    @apply bg-blue-900 text-white py-4;
+  }
+
+  .skyscanner-darkblue {
+    @apply bg-blue-900;
+  }
+
   .btn-primary {
     @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
   }

@@ -21,14 +21,25 @@ interface FilterOptions {
   template: `
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <!-- Price Alert -->
-      <div class="mb-6 pb-6 border-b border-gray-100">
-        <button class="flex items-center text-sm text-gray-700 hover:text-gray-900">
-          <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+      <div class="mb-6 pb-6 border-b border-gray-200">
+        <div class="flex items-center mb-4">
+          <svg class="w-5 h-5 mr-2 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 2L3 7v11a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V7l-7-5z"/>
           </svg>
-          Recevoir des alertes prix
+          <span class="text-sm font-medium text-gray-900">Recevoir des alertes prix</span>
+        </div>
+        <div class="text-sm text-gray-600">44 résultats</div>
+      </div>
+
+      <!-- Sort By -->
+      <div class="mb-6 pb-6 border-b border-gray-200">
+        <button class="flex items-center text-sm text-gray-700 hover:text-gray-900">
+          <span class="text-sm font-medium text-gray-900 mr-2">Trier par</span>
+          <span class="text-sm text-blue-600 font-medium">Le meilleur</span>
+          <svg class="w-4 h-4 ml-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+          </svg>
         </button>
-        <div class="text-xs text-gray-500 mt-1">44 résultats</div>
       </div>
 
       <!-- Escales Filter -->

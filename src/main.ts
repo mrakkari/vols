@@ -25,17 +25,135 @@ import { FlightService, Flight, SearchFilters } from './services/flight.service'
   ],
   providers: [FlightService],
   template: `
-    <!-- Header -->
-    <header class="skyscanner-header text-white py-6">
-      <div class="max-w-7xl mx-auto px-4">
-        <div class="text-center">
-          <h1 class="text-xl font-semibold">Paris (Tous) - Djerba (DJE) • 1 adulte, Économie</h1>
+    <!-- Hero Section (shown when no search has been performed) -->
+    <div *ngIf="!hasSearched()" class="hero-section flex items-center justify-center px-4">
+      <div class="w-full max-w-7xl">
+        <h1 class="hero-title">Find the best flight deals anywhere</h1>
+        
+        <!-- Search Form -->
+        <div class="search-form-container">
+          <!-- Trip Type Selector -->
+          <div class="mb-6">
+            <button class="trip-type-selector">
+              <span>Return</span>
+              <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Search Fields -->
+          <div class="search-grid">
+            <!-- From -->
+            <div class="search-field">
+              <label>From</label>
+              <app-location-search
+                placeholder="Tunisia (TN)"
+                (airportSelected)="onDepartureSelected($event)">
+              </app-location-search>
+            </div>
+
+            <!-- Swap Button -->
+            <div class="swap-button-container">
+              <button (click)="swapLocations()" class="swap-button">
+                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- To -->
+            <div class="search-field">
+              <label>To</label>
+              <app-location-search
+                placeholder="Country, city or airport"
+                (airportSelected)="onDestinationSelected($event)">
+              </app-location-search>
+            </div>
+
+            <!-- Depart -->
+            <div class="search-field">
+              <label>Depart</label>
+              <button
+                (click)="toggleCalendar()"
+                class="w-full px-4 py-4 border border-gray-300 rounded-lg text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                {{ selectedDate() || '18/09/2025' }}
+              </button>
+              
+              <!-- Calendar Popup -->
+              <div *ngIf="showCalendar()" class="absolute top-full left-0 mt-2 z-50">
+                <app-calendar
+                  [initialDate]="initialDateForCalendar"
+                  (dateSelected)="onCalendarDateSelected($event)"
+                  (cancelled)="hideCalendar()">
+                </app-calendar>
+              </div>
+            </div>
+
+            <!-- Return -->
+            <div class="search-field">
+              <label>Return</label>
+              <button class="w-full px-4 py-4 border border-gray-300 rounded-lg text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                25/09/2025
+              </button>
+            </div>
+
+            <!-- Travelers -->
+            <div class="search-field">
+              <label>Travellers and cabin class</label>
+              <button class="w-full px-4 py-4 border border-gray-300 rounded-lg text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                1 Adult, Economy
+              </button>
+            </div>
+          </div>
+
+          <!-- Search Options -->
+          <div class="search-options">
+            <div class="checkbox-option">
+              <input type="checkbox" id="nearby-from">
+              <label for="nearby-from">Add nearby airports</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" id="nearby-to">
+              <label for="nearby-to">Add nearby airports</label>
+            </div>
+            <div class="checkbox-option">
+              <input type="checkbox" id="direct-flights">
+              <label for="direct-flights">Direct flights</label>
+            </div>
+          </div>
+
+          <!-- Search Button -->
+          <div class="flex justify-end">
+            <button 
+              (click)="searchFlights()"
+              [disabled]="loading()"
+              class="search-button">
+              <span *ngIf="!loading()">Search</span>
+              <span *ngIf="loading()" class="flex items-center">
+                <div class="loading-spinner mr-2"></div>
+                Searching...
+              </span>
+            </button>
+          </div>
         </div>
       </div>
-    </header>
+    </div>
+
+    <!-- Results Header (shown after search) -->
+    <div *ngIf="hasSearched()" class="results-header">
+      <div class="max-w-7xl mx-auto px-4 flex items-center">
+        <button class="mr-4 p-2 rounded-full hover:bg-blue-800 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+        <h1 class="text-lg font-medium">Paris (Tous) - Djerba (DJE) • 1 adulte, Économie</h1>
+      </div>
+    </div>
 
     <!-- Price Calendar -->
-    <div class="max-w-7xl mx-auto px-4 -mt-4 mb-6">
+    <div *ngIf="hasSearched()" class="max-w-7xl mx-auto px-4 py-6">
       <app-price-calendar 
         [selectedDate]="searchParams().date_depart"
         (dateSelected)="onDateSelected($event)">
@@ -43,7 +161,7 @@ import { FlightService, Flight, SearchFilters } from './services/flight.service'
     </div>
 
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 pb-12">
+    <div *ngIf="hasSearched()" class="max-w-7xl mx-auto px-4 pb-12">
       <div class="flex gap-8">
         <!-- Sidebar -->
         <aside class="w-80 flex-shrink-0">
@@ -52,58 +170,6 @@ import { FlightService, Flight, SearchFilters } from './services/flight.service'
 
         <!-- Main Content -->
         <main class="flex-1">
-          <!-- Search Form -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <!-- Departure Location -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">De</label>
-                <app-location-search
-                  placeholder="Ville de départ"
-                  (airportSelected)="onDepartureSelected($event)">
-                </app-location-search>
-              </div>
-
-              <!-- Swap Button -->
-              <div class="flex items-end justify-center pb-3">
-                <button 
-                  (click)="swapLocations()"
-                  class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-                  <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                  </svg>
-                </button>
-              </div>
-
-              <!-- Destination Location -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Vers</label>
-                <app-location-search
-                  placeholder="Ville d'arrivée"
-                  (airportSelected)="onDestinationSelected($event)">
-                </app-location-search>
-              </div>
-
-              <!-- Date Selection -->
-              <div class="relative">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Départ</label>
-                <button
-                  (click)="toggleCalendar()"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-lg text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                  {{ selectedDate() || 'Sélectionner une date' }}
-                </button>
-
-                <!-- Calendar Popup -->
-                <div *ngIf="showCalendar()" class="absolute top-full left-0 mt-2 z-50">
-                  <app-calendar
-                    [initialDate]="initialDateForCalendar"
-                    (dateSelected)="onCalendarDateSelected($event)"
-                    (cancelled)="hideCalendar()">
-                  </app-calendar>
-                </div>
-              </div>
-            </div>
-
             <!-- Sort Options -->
             <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
               <div class="flex items-center space-x-2">
@@ -129,7 +195,6 @@ import { FlightService, Flight, SearchFilters } from './services/flight.service'
                 </span>
               </button>
             </div>
-          </div>
 
           <!-- Sort Tabs -->
           <div class="flex space-x-1 mb-6">
@@ -335,11 +400,11 @@ export class App implements OnInit {
   }
 
   getSortTabClasses(tab: string): string {
-    const base = 'cursor-pointer hover:bg-blue-50';
+    const base = 'cursor-pointer';
     if (this.activeTab() === tab) {
-      return `${base} selected bg-skyscanner-darkblue text-white`;
+      return `${base} selected bg-blue-900 text-white`;
     }
-    return `${base} text-gray-700 bg-gray-50`;
+    return `${base} text-gray-700 bg-white hover:bg-gray-50`;
   }
 
   onFiltersChanged(filters: any) {
